@@ -37,15 +37,23 @@ public native_inventory_add(numParams)
 {
 	new id = get_param(1);
 	new item = get_param(2);
+
+	if(!is_user_connected(id)) return PLUGIN_CONTINUE;
+
 	ArrayPushCell(inventory[id], item);
-	new szName[64];
-	get_user_name(id, szName, 63);
-	server_print("Add %d to  %s's inventory", item, szName);
+	/*
+		new szName[64];
+		get_user_name(id, szName, 63);
+		server_print("Add %d to  %s's inventory", item, szName);
+	*/
+	return PLUGIN_CONTINUE;
 }
 
 public native_inventory_get_item(numParams)
 {
 	new id = get_param(1);
+	if(!is_user_connected(id)) return false;
+
 	new item = get_param(2);
 	if(!item)
 		return false;
@@ -145,7 +153,7 @@ public SaveInventory(id)
 {
 	new num;
 	new szName[64];
-	new data[256];
+	new data[512];
 	new len;
 	get_user_name(id, szName, 63);
 	for(new i = 0; i < ArraySize(inventory[id]); i++)
@@ -158,7 +166,7 @@ public SaveInventory(id)
 
 ParseLoadData(id, data[256])
 {
-	new num[2]
+	new num[6]
 	while(strlen(data) > 1){
 		argbreak( data, num, sizeof( num ) - 1, data, sizeof( data ) - 1 )
 		ArrayPushCell(inventory[id], str_to_num(num));
