@@ -1,6 +1,8 @@
 #include <amxmodx>
 #include <nvault>
 
+#define MAX_ITEMS 128 * 4 // 4 characters for each item ( 3 digits and 1 space)
+
 new g_iVault;
 
 new Array:inventory[33];
@@ -21,7 +23,6 @@ public CheckInventory(id){
 	for(new i;i<ArraySize(inventory[id]);i++){
 		new tempItem = ArrayGetCell(inventory[id], i);
 		client_print(id, print_chat, "%d", tempItem);
-			
 	}
 }
 
@@ -86,7 +87,7 @@ public client_disconnected(id)
 public TransferInventory(id)
 {
 	new szName[64], szName2[64];
-	new data[256];
+	new data[MAX_ITEMS];
 	new timestamp;
 	read_argv(1, szName, 63);
 	read_argv(2, szName2, 63);
@@ -136,7 +137,7 @@ public DeleteInventory(szName[])
 public LoadInventory(id)
 {
 	new szName[64];
-	new data[256];
+	new data[MAX_ITEMS];
 	new timestamp;
 	get_user_name(id, szName, 63);
 	nvault_get(g_iVault, szName, data, sizeof(data) - 1);
@@ -153,7 +154,7 @@ public SaveInventory(id)
 {
 	new num;
 	new szName[64];
-	new data[512];
+	new data[MAX_ITEMS];
 	new len;
 	get_user_name(id, szName, 63);
 	for(new i = 0; i < ArraySize(inventory[id]); i++)
@@ -164,7 +165,7 @@ public SaveInventory(id)
 	nvault_set( g_iVault, szName, data )
 }
 
-ParseLoadData(id, data[256])
+ParseLoadData(id, data[MAX_ITEMS])
 {
 	new num[6]
 	while(strlen(data) > 1){
